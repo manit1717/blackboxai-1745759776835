@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Device Location Tracker - Laptop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-gray-100 font-inter min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
+    <h1 class="text-2xl font-semibold mb-4 text-center">Device Location Tracker</h1>
+    <button id="generateLinkBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">
+      Generate Location Link
+    </button>
+    <div id="linkContainer" class="mt-4 text-center break-words"></div>
+    <div id="locationContainer" class="mt-6 bg-gray-50 p-4 rounded border border-gray-300 min-h-[100px]">
+      <p class="text-gray-600">Location updates will appear here...</p>
+    </div>
+  </div>
+
+  <script>
+    const socket = io();
+    let currentLinkId = null;
+
+    const generateLinkBtn = document.getElementById('generateLinkBtn');
+    const linkContainer = document.getElementById('linkContainer');
+    const locationContainer = document.getElementById('locationContainer');
+
+    generateLinkBtn.addEventListener('click', async () => {
+      const response = await fetch('/generate-link');
+      const data = await response.json();
+      const url = new URL(data.link);
+      currentLinkId = url.searchParams.get('id');
+      linkContainer.innerHTML = `<a href="${data.link}" target="_blank" class="text-blue-600 underline">${data.link}</a>`;
+      socket.emit('registerLaptop', currentLinkId);
+      locationContainer.innerHTML = '<p class="text-gray-600">Waiting for location updates...</p>';
+    });
+
+    socket.on('locationUpdate', (location) => {
+      locationContainer.innerHTML = `
+        <p><strong>Latitude:</strong> ${location.latitude}</p>
+        <p><strong>Longitude:</strong> ${location.longitude}</p>
+        <p><strong>Timestamp:</strong> ${new Date(location.timestamp).toLocaleString()}</p>
+      `;
+    });
+  </script>
+</body>
+</html>
